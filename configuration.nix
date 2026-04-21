@@ -10,7 +10,11 @@
       ./hardware-configuration.nix
       ./modules/gaming.nix
       ./modules/slicers.nix
+      ./modules/vscode.nix
+      #./modules/niri.nix
     ];
+
+  myModules.dotnet-vscode.enable = true;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -94,6 +98,8 @@
     packages = with pkgs; [
     #  thunderbird
 	godot
+	legcord
+	#vscode
     ];
   };
 
@@ -111,6 +117,7 @@
     git
     neofetch
     killall
+    #noctalia-shell
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

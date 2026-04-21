@@ -3,6 +3,10 @@
 
 	inputs = {
 		nixpkgs.url = "nixpkgs/nixos-25.11";
+#		noctalia = {
+#			url = "github:noctalia-dev/noctalia-shell";
+#			inputs.nixpkgs.follows = "nixpkgs";
+#		};
 	};
 
 	outputs = { self, nixpkgs, ... }: 
