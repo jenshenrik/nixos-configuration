@@ -25,6 +25,10 @@
         slicers.enable = true;
         editors.dotnet-vscode.enable = true;
       };
+
+      services = {
+        home-assistant.enable = true;
+      };
     };
   };
 }
