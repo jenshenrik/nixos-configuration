@@ -3,16 +3,28 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ./modules/system.nix
-    ./modules/desktop.nix
-    ./modules/audio.nix
-    ./modules/users.nix
-    ./modules/packages.nix
-    ./modules/gaming.nix
-    ./modules/slicers.nix
-    ./modules/vscode.nix
-    # ./modules/niri.nix
+    ./modules
   ];
 
-  myModules.dotnet-vscode.enable = true;
+  myModules = {
+    core = {
+      system.enable = true;
+      users.enable = true;
+      packages.enable = true;
+    };
+
+    features = {
+      desktop = {
+        gnome.enable = true;
+        audio.enable = true;
+        niri.enable = false;
+      };
+
+      apps = {
+        gaming.enable = true;
+        slicers.enable = true;
+        editors.dotnet-vscode.enable = true;
+      };
+    };
+  };
 }
