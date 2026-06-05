@@ -14,7 +14,18 @@ in
       config = { };
       extraComponents = [
         "default_config"
+        "otbr"
+        "thread"
       ];
+    };
+
+    services.openthread-border-router = {
+      enable = true;
+      radio = {
+        device = "/dev/ttyUSB0";
+        baudRate = 460800;
+        flowControl = true;
+      };
     };
   };
 }
