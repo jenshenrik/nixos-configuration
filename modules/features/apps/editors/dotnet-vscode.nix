@@ -1,10 +1,13 @@
 { config, pkgs, lib, ... }:
 
+let
+  cfg = config.myModules.features.apps.editors.dotnet-vscode;
+in
 {
-  options.myModules.dotnet-vscode.enable =
+  options.myModules.features.apps.editors.dotnet-vscode.enable =
     lib.mkEnableOption "VSCode with .NET extensions";
 
-  config = lib.mkIf config.myModules.dotnet-vscode.enable {
+  config = lib.mkIf cfg.enable {
     programs.vscode = {
       enable = true;
 
