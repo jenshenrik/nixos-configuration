@@ -48,6 +48,11 @@
     LC_TIME = "da_DK.UTF-8";
   };
 
+  virtualisation.docker.enable = true;
+  #virtualization.containers.policy = {
+  #  default = [{ type = "insecureAcceptAnything"; }];
+  #};
+
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
@@ -94,11 +99,12 @@
   users.users.jenshenrik = {
     isNormalUser = true;
     description = "Jens Henrik Vogeliu";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [
     #  thunderbird
 	godot
 	legcord
+	opencode
 	#vscode
     ];
   };
@@ -117,6 +123,8 @@
     git
     neofetch
     killall
+    ffmpeg-full
+    ungoogled-chromium
     #noctalia-shell
   ];
 
@@ -137,7 +145,7 @@
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
