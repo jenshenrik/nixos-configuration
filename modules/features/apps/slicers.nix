@@ -18,6 +18,7 @@ in
   config = lib.mkIf cfg.enable {
     environment.systemPackages = [
       pkgs.prusa-slicer
+      pkgs.orca-slicer
       pkgs.LycheeSlicer
       lycheeDesktop
     ];
