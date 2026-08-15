@@ -2,7 +2,7 @@
 	description = "A Flake.";
 
 	inputs = {
-		nixpkgs.url = "nixpkgs/nixos-25.11";
+		nixpkgs.url = "nixpkgs/nixos-26.05";
 #		noctalia = {
 #			url = "github:noctalia-dev/noctalia-shell";
 #			inputs.nixpkgs.follows = "nixpkgs";

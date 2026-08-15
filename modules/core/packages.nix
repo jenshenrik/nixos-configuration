@@ -12,7 +12,6 @@ in
       vim
       wget
       git
-      neofetch
       killall
       ffmpeg-full
       ungoogled-chromium
