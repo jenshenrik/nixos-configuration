@@ -16,6 +16,10 @@ in
       killall
       ffmpeg-full
       ungoogled-chromium
+      usbimager
+      transmission_4-gtk
+      blender
+	obsidian
     ];
   };
 }
