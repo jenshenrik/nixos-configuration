@@ -24,6 +24,7 @@
         gaming.enable = true;
         slicers.enable = true;
         editors.dotnet-vscode.enable = true;
+        editors.neovim.enable = true;
       };
 
       services = {
