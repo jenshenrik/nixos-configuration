@@ -18,7 +18,12 @@
 			nixbox = lib.nixosSystem {
 				system = "x86_64-linux";
 				specialArgs = { inherit inputs; };
-				modules = [ ./configuration.nix ];
+				modules = [ ./hosts/nixbox/configuration.nix ];
+			};
+			nixhome = lib.nixosSystem {
+				system = "x86_64-linux";
+				specialArgs = { inherit inputs; };
+				modules = [ ./hosts/nixhome/configuration.nix ];
 			};
 		};
 	};
