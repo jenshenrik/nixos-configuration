@@ -5,5 +5,6 @@
     ./desktop
     ./apps
     ./services
+    ./shells
   ];
 }

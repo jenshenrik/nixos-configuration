@@ -34,6 +34,10 @@
       services = {
         home-assistant.enable = true;
       };
+
+      shells = {
+        zsh.enable = true;
+      };
     };
   };
 }
