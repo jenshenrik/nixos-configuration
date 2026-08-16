@@ -13,11 +13,15 @@
       packages.enable = true;
     };
 
+    hardware = {
+      nvidia.enable = true;
+    };
+
     features = {
       desktop = {
-        gnome.enable = true;
+        gnome.enable = false;
         audio.enable = true;
-        niri.enable = false;
+        niri.enable = true;
       };
 
       apps = {

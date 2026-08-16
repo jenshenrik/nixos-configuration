@@ -19,6 +19,5 @@ in
 
     console.keyMap = "dk-latin1";
     services.printing.enable = true;
-    programs.firefox.enable = true;
   };
 }

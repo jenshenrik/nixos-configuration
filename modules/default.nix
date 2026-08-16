@@ -3,6 +3,7 @@
 {
   imports = [
     ./core
+    ./hardware
     ./features
   ];
 }
