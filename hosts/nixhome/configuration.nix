@@ -34,6 +34,10 @@
 
     hardware = {
       nvidia.enable = false;
+      intel-gpu = {
+        enable = true;
+        generation = "legacy";
+      };
     };
 
     features = {
