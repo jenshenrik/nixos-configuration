@@ -6,6 +6,25 @@
     ../../modules
   ];
 
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  networking.hostName = "nixhome";
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 22 ];
+  };
+
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = false;
+      PermitRootLogin = "prohibit-password";
+    };
+  };
+
+  system.stateVersion = "26.05";
+
   myModules = {
     core = {
       system.enable = true;
@@ -33,6 +52,12 @@
 
       services = {
         home-assistant.enable = false;
+        spoolman = {
+          enable = true;
+          autoStart = true;
+          openFirewall = true;
+          host = "0.0.0.0";
+        };
       };
 
       shells = {

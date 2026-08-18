@@ -12,6 +12,9 @@ in
       isNormalUser = true;
       description = "Jens Henrik Vogeliu";
       extraGroups = [ "networkmanager" "wheel" "docker" ];
+      openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEvgOtVv78YtjYzgK/OnWMllO5uTgcC6OmkaCUdUPBCj jens.henrik.vogelius@proton.me"
+      ];
       packages = with pkgs; [
         godot
         legcord

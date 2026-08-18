@@ -87,6 +87,41 @@ in
       pavucontrol
       networkmanagerapplet
       xwayland-satellite
+      # File browser + removable media helpers
+      nautilus
+      udiskie
     ];
+
+    # Removable media: udisks2 exposes drives over D-Bus, gvfs lets
+    # Nautilus mount/trash/network them, and udiskie automounts on insert.
+    services.udisks2.enable = true;
+    services.gvfs.enable = true;
+
+    # Autostart udiskie for every user in the graphical session so USB
+    # sticks mount automatically with a desktop notification.
+    systemd.user.services.udiskie = {
+      description = "Automount removable media (udiskie)";
+      wantedBy = [ "graphical-session.target" ];
+      partOf = [ "graphical-session.target" ];
+      after = [ "graphical-session.target" ];
+      serviceConfig = {
+        ExecStart = "${pkgs.udiskie}/bin/udiskie --no-tray --automount --notify --file-manager ${pkgs.nautilus}/bin/nautilus";
+        Restart = "on-failure";
+      };
+    };
+
+    # Polkit needs an authentication agent in the graphical session,
+    # otherwise apps like usbimager (which authorize via udisks2/polkit)
+    # get a silent EACCES with no prompt.
+    systemd.user.services.polkit-gnome-authentication-agent-1 = {
+      description = "polkit-gnome authentication agent";
+      wantedBy = [ "graphical-session.target" ];
+      partOf = [ "graphical-session.target" ];
+      after = [ "graphical-session.target" ];
+      serviceConfig = {
+        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+        Restart = "on-failure";
+      };
+    };
   };
 }

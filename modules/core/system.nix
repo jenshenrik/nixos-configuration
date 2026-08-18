@@ -8,12 +8,7 @@ in
     lib.mkEnableOption "core system configuration";
 
   config = lib.mkIf cfg.enable {
-    boot.loader.systemd-boot.enable = true;
-    boot.loader.efi.canTouchEfiVariables = true;
-
-    networking.hostName = "nixbox";
     networking.networkmanager.enable = true;
-    networking.firewall.enable = false;
 
     time.timeZone = "Europe/Copenhagen";
 
@@ -33,6 +28,6 @@ in
     virtualisation.docker.enable = true;
     nixpkgs.config.allowUnfree = true;
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
-    system.stateVersion = "25.11";
+    nix.settings.trusted-users = [ "root" "jenshenrik" ];
   };
 }

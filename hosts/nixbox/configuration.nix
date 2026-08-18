@@ -6,6 +6,14 @@
     ../../modules
   ];
 
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  networking.hostName = "nixbox";
+  networking.firewall.enable = false;
+
+  system.stateVersion = "26.05";
+
   myModules = {
     core = {
       system.enable = true;
@@ -27,6 +35,7 @@
       apps = {
         gaming.enable = true;
         slicers.enable = true;
+        usb-imaging.enable = true;
         editors.dotnet-vscode.enable = true;
         editors.neovim.enable = true;
       };
