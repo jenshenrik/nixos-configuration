@@ -77,9 +77,15 @@ in
       services.home-assistant = {
         enable = true;
         openFirewall = cfg.openFirewall;
-        config = { };
+        config = {
+          # Load the components declared in extraComponents. Without this,
+          # Nix installs the Python deps but HA never loads them.
+          default_config = { };
+        };
         extraComponents = [
           "default_config"
+          "mobile_app"
+          "samsungtv"
         ] ++ lib.optionals cfg.zbt2.enable [
           "thread"
           "otbr"
@@ -97,6 +103,14 @@ in
       environment.systemPackages =
         lib.optional cfg.zbt2.installFlasher
           pkgs.python3Packages.universal-silabs-flasher;
+
+      # Matter Server: HA's Matter integration is a client that talks to
+      # this over websocket on localhost:5580. Required for commissioning
+      # Matter-over-Thread devices (e.g. IKEA Kajplats).
+      services.matter-server = {
+        enable = true;
+        openFirewall = false; # localhost-only; HA connects via ws://localhost:5580/ws
+      };
 
       # mDNS is required for Matter commissioning and for HA to discover
       # the border router over the LAN.
@@ -122,6 +136,9 @@ in
         interfaceName = cfg.zbt2.threadInterface;
         backboneInterfaces = [ cfg.zbt2.backboneInterface ];
         radio.device = cfg.zbt2.device;
+        # ZBT-2 OpenThread RCP firmware uses 460800 baud with hardware flow control.
+        radio.baudRate = 460800;
+        radio.flowControl = true;
       };
     })
   ];

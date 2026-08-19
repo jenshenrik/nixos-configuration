@@ -11,7 +11,7 @@ in
     users.users.jenshenrik = {
       isNormalUser = true;
       description = "Jens Henrik Vogeliu";
-      extraGroups = [ "networkmanager" "wheel" "docker" ];
+      extraGroups = [ "networkmanager" "wheel" "docker" "dialout" ];
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEvgOtVv78YtjYzgK/OnWMllO5uTgcC6OmkaCUdUPBCj jens.henrik.vogelius@proton.me"
       ];

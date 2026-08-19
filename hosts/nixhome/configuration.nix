@@ -63,7 +63,7 @@
             device = "/dev/serial/by-id/usb-Nabu_Casa_ZBT-2_E072A1D9F43C-if00";
             backboneInterface = "eno1";
             # Flip to true after flashing the stick with OpenThread RCP firmware.
-            otbr.enable = false;
+            otbr.enable = true;
           };
         };
         spoolman = {
