@@ -23,6 +23,12 @@
     };
   };
 
+  fileSystems."/mnt/data" = {
+    device = "/dev/disk/by-uuid/aa4a0687-9ab3-4995-ad56-f490f0a92c6f";
+    fsType = "ext4";
+    options = [ "defaults" "nofail" ];
+  };
+
   system.stateVersion = "26.05";
 
   myModules = {
