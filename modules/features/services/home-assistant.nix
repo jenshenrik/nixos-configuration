@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   cfg = config.myModules.features.services.home-assistant;
@@ -16,13 +16,29 @@ in
 
     zbt2 = {
       enable = lib.mkEnableOption ''
-        Home Assistant Connect ZBT-2 support as an OpenThread Border Router.
-
-        Expects the ZBT-2 to be flashed with OpenThread RCP firmware and
-        exposed on the host as a serial device. Enables otbr-agent, grants
-        Home Assistant access to the radio, and pulls in the Thread/OTBR
-        and Matter integrations.
+        Home Assistant Connect ZBT-2 support. Grants Home Assistant access
+        to the radio, pulls in the Thread/OTBR/Matter/ZHA integrations, and
+        installs `universal-silabs-flasher` for reflashing the stick in
+        place. Does *not* start the border router on its own; see
+        `zbt2.otbr.enable`.
       '';
+
+      otbr.enable = lib.mkEnableOption ''
+        Run otbr-agent against the ZBT-2. Requires the stick to be flashed
+        with OpenThread RCP firmware first — otherwise otbr-agent will spin
+        in a Spinel handshake failure loop and hold the serial port open,
+        blocking Home Assistant's USB discovery.
+      '';
+
+      installFlasher = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = ''
+          Install `universal-silabs-flasher` system-wide so the ZBT-2 can be
+          reflashed in place (e.g. between EmberZNet, OpenThread RCP, and
+          multi-PAN firmware).
+        '';
+      };
 
       device = lib.mkOption {
         type = lib.types.str;
@@ -77,15 +93,10 @@ in
       # Give the hass user access to the ZBT-2 serial device.
       users.users.hass.extraGroups = [ "dialout" ];
 
-      # OpenThread Border Router talks to the ZBT-2 RCP over serial and
-      # bridges the Thread mesh onto the LAN.
-      services.openthread-border-router = {
-        enable = true;
-        openFirewall = true;
-        interfaceName = cfg.zbt2.threadInterface;
-        backboneInterfaces = [ cfg.zbt2.backboneInterface ];
-        radio.device = cfg.zbt2.device;
-      };
+      # Reflashing utility for the ZBT-2's Silicon Labs radio.
+      environment.systemPackages =
+        lib.optional cfg.zbt2.installFlasher
+          pkgs.python3Packages.universal-silabs-flasher;
 
       # mDNS is required for Matter commissioning and for HA to discover
       # the border router over the LAN.
@@ -100,7 +111,18 @@ in
           workstation = true;
         };
       };
+    })
 
+    (lib.mkIf (cfg.enable && cfg.zbt2.enable && cfg.zbt2.otbr.enable) {
+      # OpenThread Border Router talks to the ZBT-2 RCP over serial and
+      # bridges the Thread mesh onto the LAN.
+      services.openthread-border-router = {
+        enable = true;
+        openFirewall = true;
+        interfaceName = cfg.zbt2.threadInterface;
+        backboneInterfaces = [ cfg.zbt2.backboneInterface ];
+        radio.device = cfg.zbt2.device;
+      };
     })
   ];
 }
