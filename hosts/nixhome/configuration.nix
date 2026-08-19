@@ -55,7 +55,15 @@
       };
 
       services = {
-        home-assistant.enable = false;
+        home-assistant = {
+          enable = true;
+          openFirewall = true;
+          zbt2 = {
+            enable = true;
+            device = "/dev/serial/by-id/usb-Nabu_Casa_ZBT-2_E072A1D9F43C-if00";
+            backboneInterface = "eno1";
+          };
+        };
         spoolman = {
           enable = true;
           autoStart = true;
