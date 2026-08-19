@@ -29,6 +29,10 @@
     options = [ "defaults" "nofail" ];
   };
 
+  # Give jenshenrik write access to the shared media/download trees on /mnt/data
+  # via the setgid `media` group (created by the transmission/jellyfin modules).
+  users.users.jenshenrik.extraGroups = [ "media" ];
+
   system.stateVersion = "26.05";
 
   myModules = {
@@ -77,6 +81,15 @@
           autoStart = true;
           openFirewall = true;
           host = "0.0.0.0";
+        };
+        transmission = {
+          enable = true;
+          openFirewall = true;
+          openPeerPorts = true;
+        };
+        jellyfin = {
+          enable = true;
+          openFirewall = true;
         };
       };
 
