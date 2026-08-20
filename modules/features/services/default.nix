@@ -6,5 +6,6 @@
     ./jellyfin.nix
     ./spoolman.nix
     ./transmission.nix
+    ./vpn-namespace.nix
   ];
 }

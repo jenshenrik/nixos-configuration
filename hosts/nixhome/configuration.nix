@@ -85,7 +85,15 @@
         transmission = {
           enable = true;
           openFirewall = true;
-          openPeerPorts = true;
+          openPeerPorts = false;   # peer port only via VPN; nothing to open on LAN
+          netnsName = "protonvpn";
+          portForwarding.enable = true;
+        };
+        vpnNamespace = {
+          enable = true;
+          name = "protonvpn";
+          wireguardConfigFile = "/var/lib/proton-vpn/wg0.conf";
+          lanCidr = "192.168.86.0/24";
         };
         jellyfin = {
           enable = true;
