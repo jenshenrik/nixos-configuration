@@ -43,6 +43,7 @@ in
         "${config.networking.hostName}:${toString cfg.port}"
         "localhost:${toString cfg.port}"
         "127.0.0.1:${toString cfg.port}"
+        "192.168.86.246:${toString cfg.port}"
       ];
 
       settings = {
