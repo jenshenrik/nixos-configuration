@@ -54,12 +54,6 @@ in
         };
       };
 
-      environmentFiles = [ ];
-      environment = {
-        # Disable HTTPS redirect since we don't have certificates configured
-        HOMEPAGE_FORCE_HTTPS = "false";
-      };
-
       widgets = [
         { resources = { cpu = true; memory = true; disk = [ "/" "/mnt/data" ]; }; }
         { datetime = { text_size = "md"; format = { dateStyle = "long"; timeStyle = "short"; hour12 = false; }; }; }
