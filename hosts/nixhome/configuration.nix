@@ -99,6 +99,10 @@
           enable = true;
           openFirewall = true;
         };
+        homepage = {
+          enable = true;
+          openFirewall = true;
+        };
       };
 
       shells = {
