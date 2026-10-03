@@ -12,7 +12,7 @@ in
 
     port = lib.mkOption {
       type = lib.types.port;
-      default = 8082;
+      default = 80;
       description = "Port on which Homepage listens.";
     };
 
@@ -100,6 +100,12 @@ in
               };
             };
         };
+    };
+
+    # Grant the homepage service permission to bind to port 80
+    systemd.services.homepage-dashboard.serviceConfig = {
+      AmbientCapabilities = "CAP_NET_BIND_SERVICE";
+      CapabilityBoundingSet = "CAP_NET_BIND_SERVICE";
     };
   };
 }
