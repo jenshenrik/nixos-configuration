@@ -39,12 +39,20 @@ in
       openFirewall = cfg.openFirewall;
       # Homepage rejects requests whose Host header isn't listed here.
       allowedHosts = lib.concatStringsSep "," [
+        # With port
         "${cfg.hostname}:${toString cfg.port}"
         "${config.networking.hostName}:${toString cfg.port}"
         "${config.networking.hostName}.local:${toString cfg.port}"
         "localhost:${toString cfg.port}"
         "127.0.0.1:${toString cfg.port}"
         "192.168.86.246:${toString cfg.port}"
+        # Without port (browsers often omit default port 80)
+        cfg.hostname
+        config.networking.hostName
+        "${config.networking.hostName}.local"
+        "localhost"
+        "127.0.0.1"
+        "192.168.86.246"
       ];
 
       settings = {
