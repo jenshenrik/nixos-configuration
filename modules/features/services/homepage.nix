@@ -12,7 +12,7 @@ in
 
     port = lib.mkOption {
       type = lib.types.port;
-      default = 80;
+      default = 8082;
       description = "Port on which Homepage listens.";
     };
 
@@ -52,6 +52,12 @@ in
           "Home" = { style = "row"; columns = 2; };
           "Media" = { style = "row"; columns = 2; };
         };
+      };
+
+      environmentFiles = [ ];
+      environment = {
+        # Disable HTTPS redirect since we don't have certificates configured
+        HOMEPAGE_FORCE_HTTPS = "false";
       };
 
       widgets = [
