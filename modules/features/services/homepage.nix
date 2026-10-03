@@ -98,8 +98,8 @@ in
 
     # Grant the homepage service permission to bind to port 80
     systemd.services.homepage-dashboard.serviceConfig = {
-      AmbientCapabilities = "CAP_NET_BIND_SERVICE";
-      CapabilityBoundingSet = "CAP_NET_BIND_SERVICE";
+      AmbientCapabilities = lib.mkForce "CAP_NET_BIND_SERVICE";
+      CapabilityBoundingSet = lib.mkForce "CAP_NET_BIND_SERVICE";
     };
   };
 }
