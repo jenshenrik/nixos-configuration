@@ -24,7 +24,7 @@ in
 
     hostname = lib.mkOption {
       type = lib.types.str;
-      default = "${config.networking.hostName}.local";
+      default = "${config.networking.hostName}.lan";
       description = ''
         Hostname used for service links on the dashboard and for
         Homepage's allowed-hosts check.
