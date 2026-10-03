@@ -12,7 +12,7 @@ in
 
     port = lib.mkOption {
       type = lib.types.port;
-      default = 8082;
+      default = 80;
       description = "Port on which Homepage listens.";
     };
 
@@ -24,7 +24,7 @@ in
 
     hostname = lib.mkOption {
       type = lib.types.str;
-      default = "${config.networking.hostName}.lan";
+      default = "home.lan";
       description = ''
         Hostname used for service links on the dashboard and for
         Homepage's allowed-hosts check.
