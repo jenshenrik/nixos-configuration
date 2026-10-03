@@ -12,6 +12,13 @@
   networking.hostName = "nixbox";
   networking.firewall.enable = false;
 
+  # Enable mDNS for .local hostname resolution
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    nssmdns6 = true;
+  };
+
   system.stateVersion = "26.05";
 
   myModules = {
