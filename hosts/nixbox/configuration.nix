@@ -46,6 +46,7 @@
 
       shells = {
         zsh.enable = true;
+        direnv.enable = true;
       };
     };
   };
