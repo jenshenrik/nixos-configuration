@@ -61,6 +61,7 @@ in
         layout = {
           "Home" = { style = "row"; columns = 2; };
           "Media" = { style = "row"; columns = 2; };
+          "Printing" = { style = "row"; columns = 2; };
         };
       };
 
@@ -103,7 +104,20 @@ in
                 description = "Torrents (via VPN)";
               };
             };
-        };
+        }
+        ++ [
+          {
+            "Printing" = [
+              {
+                "Fluidd" = {
+                  icon = "fluidd.png";
+                  href = "http://192.168.86.120";
+                  description = "Neptune 4 Plus";
+                };
+              }
+            ];
+          }
+        ];
     };
 
     # Grant the homepage service permission to bind to port 80
