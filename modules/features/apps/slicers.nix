@@ -1,26 +1,28 @@
-{ config, lib, pkgs, ... }:
-
-let
-  cfg = config.myModules.features.apps.slicers;
-  lycheeDesktop = pkgs.makeDesktopItem {
-    name = "lychee-slicer";
-    desktopName = "Lychee Slicer";
-    exec = "lycheeslicer";
-    icon = "printer";
-    comment = "All-in-one 3D slicer for Resin and Filament";
-    categories = [ "Graphics" ];
-  };
-in
 {
-  options.myModules.features.apps.slicers.enable =
-    lib.mkEnableOption "3D slicer applications";
+  nixos.shared = { config, lib, pkgs, ... }:
 
-  config = lib.mkIf cfg.enable {
-    environment.systemPackages = [
-      pkgs.prusa-slicer
-      pkgs.orca-slicer
-      pkgs.lycheeslicer
-      lycheeDesktop
-    ];
+  let
+    cfg = config.myModules.features.apps.slicers;
+    lycheeDesktop = pkgs.makeDesktopItem {
+      name = "lychee-slicer";
+      desktopName = "Lychee Slicer";
+      exec = "lycheeslicer";
+      icon = "printer";
+      comment = "All-in-one 3D slicer for Resin and Filament";
+      categories = [ "Graphics" ];
+    };
+  in
+  {
+    options.myModules.features.apps.slicers.enable =
+      lib.mkEnableOption "3D slicer applications";
+
+    config = lib.mkIf cfg.enable {
+      environment.systemPackages = [
+        pkgs.prusa-slicer
+        pkgs.orca-slicer
+        pkgs.lycheeslicer
+        lycheeDesktop
+      ];
+    };
   };
 }

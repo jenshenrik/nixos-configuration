@@ -1,61 +1,63 @@
-{ ... }:
+{ config, ... }:
 
 {
-  imports = [
-    ./hardware-configuration.nix
-    ../../modules
-  ];
+  nixos.hosts.nixbox = { ... }: {
+    imports = [
+      ./hardware-configuration.nix
+      config.nixos.shared
+    ];
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+    boot.loader.systemd-boot.enable = true;
+    boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixbox";
-  networking.firewall.enable = false;
+    networking.hostName = "nixbox";
+    networking.firewall.enable = false;
 
-  # Enable mDNS for .local hostname resolution
-  services.avahi = {
-    enable = true;
-    nssmdns4 = true;
-    nssmdns6 = true;
-  };
-
-  system.stateVersion = "26.05";
-
-  myModules = {
-    core = {
-      system.enable = true;
-      users.enable = true;
-      packages.enable = true;
+    # Enable mDNS for .local hostname resolution
+    services.avahi = {
+      enable = true;
+      nssmdns4 = true;
+      nssmdns6 = true;
     };
 
-    hardware = {
-      nvidia.enable = true;
-    };
+    system.stateVersion = "26.05";
 
-    features = {
-      desktop = {
-        gnome.enable = false;
-        audio.enable = true;
-        niri.enable = true;
+    myModules = {
+      core = {
+        system.enable = true;
+        users.enable = true;
+        packages.enable = true;
       };
 
-      apps = {
-        ghostty.enable = true;
-        gaming.enable = true;
-        slicers.enable = true;
-        usb-imaging.enable = true;
-        editors.dotnet-vscode.enable = true;
-        editors.neovim.enable = true;
+      hardware = {
+        nvidia.enable = true;
       };
 
-      services = {
-        home-assistant.enable = true;
-      };
+      features = {
+        desktop = {
+          gnome.enable = false;
+          audio.enable = true;
+          niri.enable = true;
+        };
 
-      shells = {
-        zsh.enable = true;
-        starship.enable = true;
-        direnv.enable = true;
+        apps = {
+          ghostty.enable = true;
+          gaming.enable = true;
+          slicers.enable = true;
+          usb-imaging.enable = true;
+          editors.dotnet-vscode.enable = true;
+          editors.neovim.enable = true;
+        };
+
+        services = {
+          home-assistant.enable = true;
+        };
+
+        shells = {
+          zsh.enable = true;
+          starship.enable = true;
+          direnv.enable = true;
+        };
       };
     };
   };

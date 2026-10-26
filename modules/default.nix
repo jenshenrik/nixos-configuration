@@ -1,9 +1,11 @@
-{ ... }:
+{ lib, inputs, ... }:
 
 {
+  # Keep the unmigrated nixhome entry point consuming ordinary NixOS modules.
   imports = [
-    ./core
-    ./hardware
-    ./features
+    (lib.evalModules {
+      specialArgs = { inherit inputs; };
+      modules = [ ./top-level.nix ];
+    }).config.nixos.shared
   ];
 }

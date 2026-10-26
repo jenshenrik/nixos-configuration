@@ -1,23 +1,25 @@
-{ config, lib, ... }:
-
-let
-  cfg = config.myModules.features.desktop.gnome;
-in
 {
-  options.myModules.features.desktop.gnome.enable =
-    lib.mkEnableOption "GNOME desktop";
+  nixos.shared = { config, lib, ... }:
 
-  config = lib.mkIf cfg.enable {
-    services.xserver.enable = true;
-    services.displayManager.gdm.enable = true;
-    services.desktopManager.gnome.enable = true;
+  let
+    cfg = config.myModules.features.desktop.gnome;
+  in
+  {
+    options.myModules.features.desktop.gnome.enable =
+      lib.mkEnableOption "GNOME desktop";
 
-    services.xserver.xkb = {
-      layout = "dk";
-      variant = "";
+    config = lib.mkIf cfg.enable {
+      services.xserver.enable = true;
+      services.displayManager.gdm.enable = true;
+      services.desktopManager.gnome.enable = true;
+
+      services.xserver.xkb = {
+        layout = "dk";
+        variant = "";
+      };
+
+      console.keyMap = "dk-latin1";
+      services.printing.enable = true;
     };
-
-    console.keyMap = "dk-latin1";
-    services.printing.enable = true;
   };
 }

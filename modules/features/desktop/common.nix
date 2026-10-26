@@ -1,5 +1,7 @@
-{ ... }:
-
 {
-  programs.firefox.enable = true;
+  nixos.shared = { ... }:
+
+  {
+    programs.firefox.enable = true;
+  };
 }

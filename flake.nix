@@ -12,13 +12,19 @@
 	outputs = { self, nixpkgs, ... }@inputs: 
 	let
 		lib = nixpkgs.lib;
+		topLevel = lib.evalModules {
+			specialArgs = { inherit inputs; };
+			modules = [
+				./modules/top-level.nix
+				./hosts/nixbox/configuration.nix
+			];
+		};
 	in
 	{
 		nixosConfigurations = {
 			nixbox = lib.nixosSystem {
 				system = "x86_64-linux";
-				specialArgs = { inherit inputs; };
-				modules = [ ./hosts/nixbox/configuration.nix ];
+				modules = [ topLevel.config.nixos.hosts.nixbox ];
 			};
 			nixhome = lib.nixosSystem {
 				system = "x86_64-linux";
