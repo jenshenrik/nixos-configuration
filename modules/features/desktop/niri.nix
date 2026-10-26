@@ -73,7 +73,6 @@ in
     # Baseline userland for a niri session
     environment.systemPackages = with pkgs; [
       tuigreet
-      alacritty
       fuzzel
       swaylock
       swayidle

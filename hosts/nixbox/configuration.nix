@@ -40,6 +40,7 @@
       };
 
       apps = {
+        ghostty.enable = true;
         gaming.enable = true;
         slicers.enable = true;
         usb-imaging.enable = true;
@@ -53,6 +54,7 @@
 
       shells = {
         zsh.enable = true;
+        starship.enable = true;
         direnv.enable = true;
       };
     };
