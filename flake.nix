@@ -17,6 +17,7 @@
 			modules = [
 				./modules/top-level.nix
 				./hosts/nixbox/configuration.nix
+				./hosts/nixhome/configuration.nix
 			];
 		};
 	in
@@ -28,8 +29,7 @@
 			};
 			nixhome = lib.nixosSystem {
 				system = "x86_64-linux";
-				specialArgs = { inherit inputs; };
-				modules = [ ./hosts/nixhome/configuration.nix ];
+				modules = [ topLevel.config.nixos.hosts.nixhome ];
 			};
 		};
 	};
