@@ -2,8 +2,14 @@
 
 let
   modules = config.nixos.modules;
+  localNetwork = config.localNetwork;
 in
 {
+  localNetwork = {
+    serverAddress = "192.168.86.246";
+    domain = "home.arpa";
+  };
+
   nixos.hosts.nixhome = { config, pkgs, ... }: {
     imports = [
       ./hardware-configuration.nix
@@ -28,7 +34,7 @@ in
     networking.useDHCP = false;
     networking.interfaces.eno1.ipv4.addresses = [
       {
-        address = "192.168.86.246";
+        address = localNetwork.serverAddress;
         prefixLength = 24;
       }
     ];
@@ -132,7 +138,7 @@ in
           adguardhome = {
             openFirewall = true;
             extraRewrites = {
-              "fluidd.home.arpa" = "192.168.86.120";
+              "fluidd.${localNetwork.domain}" = "192.168.86.120";
             };
           };
           reverseProxy = {

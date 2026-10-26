@@ -1,8 +1,12 @@
+{ config, ... }:
+
+let
+  localNetwork = config.localNetwork;
+in
 {
   nixos.modules.server-web = { config, lib, ... }:
   let
     cfg = config.myModules.features.services.homepage;
-    svc = config.myModules.features.services;
     groups = lib.groupBy (entry: entry.group) (lib.attrValues cfg.entries);
     groupOrder = [ "Home" "Media" "Printing" "Network" ];
   in
@@ -52,15 +56,15 @@
           "${config.networking.hostName}.local:${toString cfg.port}"
           "localhost:${toString cfg.port}"
           "127.0.0.1:${toString cfg.port}"
-          "192.168.86.246:${toString cfg.port}"
+          "${localNetwork.serverAddress}:${toString cfg.port}"
           cfg.hostname
           config.networking.hostName
           "${config.networking.hostName}.local"
           "localhost"
           "127.0.0.1"
-          "192.168.86.246"
-          "home.${svc.adguardhome.localDomain}"
-          "${config.networking.hostName}.${svc.adguardhome.localDomain}"
+          localNetwork.serverAddress
+          "home.${localNetwork.domain}"
+          "${config.networking.hostName}.${localNetwork.domain}"
         ];
         settings = {
           title = "nixhome";

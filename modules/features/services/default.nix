@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./local-network.nix
     ./fluidd.nix
     ./adguardhome.nix
     ./home-assistant.nix

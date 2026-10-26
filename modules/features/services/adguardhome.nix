@@ -1,3 +1,8 @@
+{ config, ... }:
+
+let
+  localNetwork = config.localNetwork;
+in
 {
   nixos.modules.server-web = { config, lib, ... }:
 
@@ -16,18 +21,6 @@
         type = lib.types.port;
         default = 3000;
         description = "Port for the web UI (bound to localhost; reach it via the reverse proxy).";
-      };
-
-      serverIp = lib.mkOption {
-        type = lib.types.str;
-        default = "192.168.86.246";
-        description = "LAN IP of this server; *.<localDomain> resolves here.";
-      };
-
-      localDomain = lib.mkOption {
-        type = lib.types.str;
-        default = "home.arpa";
-        description = "Local domain suffix for service names (e.g. jellyfin.home.arpa).";
       };
 
       extraRewrites = lib.mkOption {
@@ -89,8 +82,8 @@
             # Exact names (extraRewrites) take precedence over the wildcard.
             rewrites =
               [
-                { domain = "*.${cfg.localDomain}"; answer = cfg.serverIp; enabled = true; }
-                { domain = "${config.networking.hostName}.${cfg.localDomain}"; answer = cfg.serverIp; enabled = true; }
+                { domain = "*.${localNetwork.domain}"; answer = localNetwork.serverAddress; enabled = true; }
+                { domain = "${config.networking.hostName}.${localNetwork.domain}"; answer = localNetwork.serverAddress; enabled = true; }
               ]
               ++ lib.mapAttrsToList
                 (domain: answer: { inherit domain answer; enabled = true; })

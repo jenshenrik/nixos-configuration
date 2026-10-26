@@ -1,10 +1,13 @@
+{ config, ... }:
+
+let
+  domain = config.localNetwork.domain;
+in
 {
   nixos.modules.server-web = { config, lib, ... }:
 
   let
     cfg = config.myModules.features.services.reverseProxy;
-    svc = config.myModules.features.services;
-    domain = svc.adguardhome.localDomain;
 
     routes = cfg.routes;
   in
