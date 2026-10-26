@@ -4,7 +4,12 @@ let
   cfg = config.myModules.features.services.homepage;
   svc = config.myModules.features.services;
 
-  url = port: "http://${cfg.hostname}:${toString port}";
+  proxy = svc.reverseProxy;
+  # Prefer the reverse-proxy name; fall back to host:port.
+  link = name: port:
+    if proxy.enable && proxy.hostnames ? ${name}
+    then proxy.hostnames.${name}
+    else "http://${cfg.hostname}:${toString port}";
 in
 {
   options.myModules.features.services.homepage = {
@@ -12,8 +17,8 @@ in
 
     port = lib.mkOption {
       type = lib.types.port;
-      default = 80;
-      description = "Port on which Homepage listens.";
+      default = 8082;
+      description = "Port on which Homepage listens (port 80 belongs to Caddy).";
     };
 
     openFirewall = lib.mkOption {
@@ -53,6 +58,9 @@ in
         "localhost"
         "127.0.0.1"
         "192.168.86.246"
+        # Via the Caddy reverse proxy
+        "home.${svc.adguardhome.localDomain}"
+        "${config.networking.hostName}.${svc.adguardhome.localDomain}"
       ];
 
       settings = {
@@ -62,6 +70,7 @@ in
           "Home" = { style = "row"; columns = 2; };
           "Media" = { style = "row"; columns = 2; };
           "Printing" = { style = "row"; columns = 2; };
+          "Network" = { style = "row"; columns = 2; };
         };
       };
 
@@ -76,14 +85,14 @@ in
             lib.optional svc.home-assistant.enable {
               "Home Assistant" = {
                 icon = "home-assistant.png";
-                href = url 8123;
+                href = link "homeassistant" 8123;
                 description = "Home automation";
               };
             }
             ++ lib.optional svc.spoolman.enable {
               "Spoolman" = {
                 icon = "spoolman.png";
-                href = url svc.spoolman.port;
+                href = link "spoolman" svc.spoolman.port;
                 description = "Filament inventory";
               };
             };
@@ -93,21 +102,21 @@ in
             lib.optional svc.romm.enable {
               "RomM" = {
                 icon = "romm.png";
-                href = url svc.romm.port;
+                href = link "romm" svc.romm.port;
                 description = "ROM manager";
               };
             }
             ++ lib.optional svc.jellyfin.enable {
               "Jellyfin" = {
                 icon = "jellyfin.png";
-                href = url 8096;
+                href = link "jellyfin" 8096;
                 description = "Media server";
               };
             }
             ++ lib.optional svc.transmission.enable {
               "Transmission" = {
                 icon = "transmission.png";
-                href = url svc.transmission.rpcPort;
+                href = link "transmission" svc.transmission.rpcPort;
                 description = "Torrents (via VPN)";
               };
             };
@@ -118,20 +127,29 @@ in
               {
                 "Fluidd" = {
                   icon = "fluidd.png";
-                  href = "http://192.168.86.120";
+                  href = if svc.adguardhome.enable then "http://fluidd.${svc.adguardhome.localDomain}" else "http://192.168.86.120";
                   description = "Neptune 4 Plus";
                 };
               }
             ];
           }
-        ];
-    };
-
-    # Grant the homepage service permission to bind to port 80
-    systemd.services.homepage-dashboard.serviceConfig = {
-      AmbientCapabilities = lib.mkForce "CAP_NET_BIND_SERVICE";
-      CapabilityBoundingSet = lib.mkForce "CAP_NET_BIND_SERVICE";
-      PrivateUsers = lib.mkForce false;
+        ]
+        ++ lib.optional svc.adguardhome.enable {
+          "Network" = [
+            {
+              "AdGuard Home" = {
+                icon = "adguard-home.png";
+                href = link "adguard" svc.adguardhome.port;
+                description = "DNS & ad blocking";
+                widget = {
+                  type = "adguard";
+                  url = "http://127.0.0.1:${toString svc.adguardhome.port}";
+                  fields = [ "queries" "blocked" "filtered" "latency" ];
+                };
+              };
+            }
+          ];
+        };
     };
   };
 }

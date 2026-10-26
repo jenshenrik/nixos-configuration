@@ -10,6 +10,18 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "nixhome";
+
+  # Static IP on the wired LAN interface. nixhome serves DNS for the LAN,
+  # so its address must never change. NetworkManager is told to leave eno1
+  # alone; the NixOS scripted networking configures it instead.
+  networking.networkmanager.unmanaged = [ "eno1" ];
+  networking.useDHCP = false;
+  networking.interfaces.eno1.ipv4.addresses = [
+    { address = "192.168.86.246"; prefixLength = 24; }
+  ];
+  networking.defaultGateway = { address = "192.168.86.1"; interface = "eno1"; };
+  # Use the local AdGuard Home first; fall back to Quad9 if it's down.
+  networking.nameservers = [ "127.0.0.1" "9.9.9.9" ];
   networking.firewall = {
     enable = true;
     allowedTCPPorts = [ 22 ];
@@ -105,6 +117,15 @@
           openFirewall = true;
         };
         homepage = {
+          enable = true;
+          openFirewall = true;
+        };
+        adguardhome = {
+          enable = true;
+          openFirewall = true;
+          extraRewrites = { "fluidd.home.arpa" = "192.168.86.120"; };
+        };
+        reverseProxy = {
           enable = true;
           openFirewall = true;
         };
