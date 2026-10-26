@@ -65,7 +65,7 @@ in
       # activates graphical-session.target on login).
       programs.noctalia = {
         enable = true;
-        package = inputs.noctalia.packages.${pkgs.system}.default;
+        package = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
         systemd.enable = true;
         recommendedServices.enable = true;
       };

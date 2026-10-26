@@ -31,7 +31,7 @@ in
           #     expireDuplicatesFirst = true;
           # };
 
-          oh-my-zsh = {
+          ohMyZsh = {
               enable = true;
               plugins = [ "git" ];
               theme = "";
