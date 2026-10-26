@@ -1,12 +1,7 @@
-{ config, ... }:
-let
-  legacy = config.legacy;
-in
 {
-  nixos.modules.${if legacy then "legacy" else "fabrication"} = { config, lib, pkgs, ... }:
+  nixos.modules.fabrication = { pkgs, ... }:
 
   let
-    cfg = config.myModules.features.apps.slicers;
     lycheeDesktop = pkgs.makeDesktopItem {
       name = "lychee-slicer";
       desktopName = "Lychee Slicer";
@@ -17,18 +12,11 @@ in
     };
   in
   {
-    options = lib.optionalAttrs legacy {
-      myModules.features.apps.slicers.enable =
-        lib.mkEnableOption "3D slicer applications";
-    };
-
-    config = lib.mkIf (!legacy || cfg.enable) {
-      environment.systemPackages = [
-        pkgs.prusa-slicer
-        pkgs.orca-slicer
-        pkgs.lycheeslicer
-        lycheeDesktop
-      ];
-    };
+    environment.systemPackages = [
+      pkgs.prusa-slicer
+      pkgs.orca-slicer
+      pkgs.lycheeslicer
+      lycheeDesktop
+    ];
   };
 }

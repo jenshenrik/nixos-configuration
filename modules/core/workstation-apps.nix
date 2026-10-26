@@ -1,7 +1,5 @@
-{ config, lib, ... }:
-
 {
-  nixos.modules = lib.optionalAttrs (!config.legacy) {
+  nixos.modules = {
     workstation = { pkgs, ... }: {
       environment.systemPackages = with pkgs; [
         ffmpeg-full

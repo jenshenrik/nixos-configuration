@@ -1,49 +1,33 @@
-{ config, ... }:
-let
-  legacy = config.legacy;
-in
 {
-  nixos.modules.${if legacy then "legacy" else "base"} = { config, pkgs, lib, ... }:
+  nixos.modules.base = { pkgs, ... }: {
+    programs.zsh = {
+        enable = true;
 
-  let
-    cfg = config.myModules.features.shells.zsh;
-  in
-  {
-    options = lib.optionalAttrs legacy {
-      myModules.features.shells.zsh.enable =
-        lib.mkEnableOption "Zsh as the default user shell";
+        enableCompletion = true;
+        #autosuggestion.enable = true;
+        syntaxHighlighting.enable = true;
+
+        # history = {
+        #     size = 50000;
+        #     save = 50000;
+        #     extended = true;
+        #     share = true;
+        #     ignoreDups = true;
+        #     expireDuplicatesFirst = true;
+        # };
+
+        ohMyZsh = {
+            enable = true;
+            plugins = [ "git" ];
+            theme = "";
+        };
+
+        shellAliases = {
+            #"git pu" = "git push -u origin HEAD";
+        };
     };
 
-    config = lib.mkIf (!legacy || cfg.enable) {
-      programs.zsh = {
-          enable = true;
-
-          enableCompletion = true;
-          #autosuggestion.enable = true;
-          syntaxHighlighting.enable = true;
-
-          # history = {
-          #     size = 50000;
-          #     save = 50000;
-          #     extended = true;
-          #     share = true;
-          #     ignoreDups = true;
-          #     expireDuplicatesFirst = true;
-          # };
-
-          ohMyZsh = {
-              enable = true;
-              plugins = [ "git" ];
-              theme = "";
-          };
-
-          shellAliases = {
-              #"git pu" = "git push -u origin HEAD";
-          };
-      };
-
-      users.defaultUserShell = pkgs.zsh;
-      users.users.jenshenrik.shell = pkgs.zsh;
-    };
+    users.defaultUserShell = pkgs.zsh;
+    users.users.jenshenrik.shell = pkgs.zsh;
   };
 }
