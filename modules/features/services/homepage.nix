@@ -88,9 +88,16 @@ in
               };
             };
         }
-        ++ lib.optional (svc.jellyfin.enable || svc.transmission.enable) {
+        ++         lib.optional (svc.jellyfin.enable || svc.transmission.enable || svc.romm.enable) {
           "Media" =
-            lib.optional svc.jellyfin.enable {
+            lib.optional svc.romm.enable {
+              "RomM" = {
+                icon = "romm.png";
+                href = url svc.romm.port;
+                description = "ROM manager";
+              };
+            }
+            ++ lib.optional svc.jellyfin.enable {
               "Jellyfin" = {
                 icon = "jellyfin.png";
                 href = url 8096;
