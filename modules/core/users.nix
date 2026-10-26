@@ -4,7 +4,7 @@ let
   legacy = config.legacy;
 in
 {
-  nixos.modules.development = {
+  nixos.modules.server-admin = {
     users.users.jenshenrik.extraGroups = [ "docker" ];
   };
 

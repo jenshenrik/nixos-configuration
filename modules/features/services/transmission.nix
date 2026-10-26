@@ -1,13 +1,11 @@
 {
-  nixos.shared = { config, lib, pkgs, ... }:
+  nixos.modules.media = { config, lib, pkgs, ... }:
 
   let
     cfg = config.myModules.features.services.transmission;
   in
   {
     options.myModules.features.services.transmission = {
-      enable = lib.mkEnableOption "Transmission BitTorrent daemon";
-
       openFirewall = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -91,7 +89,7 @@
       };
     };
 
-    config = lib.mkIf cfg.enable {
+    config = {
       users.groups.${cfg.mediaGroup} = { };
 
       services.transmission = {

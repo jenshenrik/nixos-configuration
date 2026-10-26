@@ -1,13 +1,11 @@
 {
-  nixos.shared = { config, lib, pkgs, ... }:
+  nixos.modules.intel-gpu = { config, lib, pkgs, ... }:
 
   let
     cfg = config.myModules.hardware.intel-gpu;
   in
   {
     options.myModules.hardware.intel-gpu = {
-      enable = lib.mkEnableOption "Intel integrated GPU with VA-API hardware video acceleration";
-
       generation = lib.mkOption {
         type = lib.types.enum [ "legacy" "modern" ];
         default = "modern";
@@ -20,7 +18,7 @@
       };
     };
 
-    config = lib.mkIf cfg.enable {
+    config = {
       hardware.graphics = {
         enable = true;
         extraPackages = if cfg.generation == "legacy"

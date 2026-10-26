@@ -1,13 +1,11 @@
 {
-  nixos.shared = { config, lib, pkgs, ... }:
+  nixos.modules.printing = { config, lib, pkgs, ... }:
 
   let
     cfg = config.myModules.features.services.spoolman;
   in
   {
     options.myModules.features.services.spoolman = {
-      enable = lib.mkEnableOption "Spoolman filament spool manager";
-
       autoStart = lib.mkOption {
         type = lib.types.bool;
         default = true;
@@ -34,7 +32,7 @@
       };
     };
 
-    config = lib.mkIf cfg.enable {
+    config = {
       # Upstream nixpkgs 26.05 pairs spoolman 0.23.1 with starlette 1.1.0, which
       # dropped FileResponse's `method` kwarg — every static asset 500s and the
       # UI is blank. Apply the upstream commit that removes the kwarg.

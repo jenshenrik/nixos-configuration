@@ -1,13 +1,11 @@
 {
-  nixos.shared = { config, lib, ... }:
+  nixos.modules.server-web = { config, lib, ... }:
 
   let
     cfg = config.myModules.features.services.adguardhome;
   in
   {
     options.myModules.features.services.adguardhome = {
-      enable = lib.mkEnableOption "AdGuard Home (LAN DNS server + ad blocker)";
-
       openFirewall = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -40,7 +38,7 @@
       };
     };
 
-    config = lib.mkIf cfg.enable {
+    config = {
       services.adguardhome = {
         enable = true;
         host = "127.0.0.1";

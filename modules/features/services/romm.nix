@@ -1,13 +1,11 @@
 {
-  nixos.shared = { config, lib, ... }:
+  nixos.modules.media = { config, lib, ... }:
 
   let
     cfg = config.myModules.features.services.romm;
   in
   {
     options.myModules.features.services.romm = {
-      enable = lib.mkEnableOption "RomM self-hosted ROM manager";
-
       port = lib.mkOption {
         type = lib.types.port;
         default = 8090;
@@ -43,7 +41,7 @@
       };
     };
 
-    config = lib.mkIf cfg.enable {
+    config = {
       services.romm = {
         enable = true;
         # Backend API stays on loopback; nginx fronts it.

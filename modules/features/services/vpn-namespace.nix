@@ -1,5 +1,5 @@
 {
-  nixos.shared = { config, lib, pkgs, ... }:
+  nixos.modules.media = { config, lib, pkgs, ... }:
 
   let
     cfg = config.myModules.features.services.vpnNamespace;
@@ -12,8 +12,6 @@
   in
   {
     options.myModules.features.services.vpnNamespace = {
-      enable = lib.mkEnableOption "Proton VPN WireGuard network namespace";
-
       name = lib.mkOption {
         type = lib.types.str;
         default = "protonvpn";
@@ -55,7 +53,7 @@
       };
     };
 
-    config = lib.mkIf cfg.enable {
+    config = {
       # Ensure the parent directory for the WireGuard secret exists with tight
       # perms. The .conf file itself is user-provided (kept out of the Nix store).
       systemd.tmpfiles.rules = [

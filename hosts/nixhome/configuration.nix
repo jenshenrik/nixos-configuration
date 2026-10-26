@@ -1,23 +1,19 @@
-{ lib, inputs, ... }:
+{ config, ... }:
 
 let
-  # Preserve feature selection until nixhome's lower-level modules are migrated.
-  legacyConfig =
-    (lib.evalModules {
-      specialArgs = { inherit inputs; };
-      modules = [
-        ../../modules/top-level.nix
-        { legacy = true; }
-      ];
-    }).config;
+  modules = config.nixos.modules;
 in
-
 {
-  nixos.hosts.nixhome = { ... }: {
+  nixos.hosts.nixhome = { config, pkgs, ... }: {
     imports = [
       ./hardware-configuration.nix
-      legacyConfig.nixos.shared
-      legacyConfig.nixos.modules.legacy
+      modules.base
+      modules.server-admin
+      modules.media
+      modules.printing
+      modules.server-web
+      modules.home-assistant
+      modules.intel-gpu
     ];
 
     boot.loader.systemd-boot.enable = true;
@@ -77,38 +73,27 @@ in
 
     system.stateVersion = "26.05";
 
-    myModules = {
-      core = {
-        system.enable = true;
-        users.enable = true;
-        packages.enable = true;
-      };
+    # Preserve the old baseline package selection during the structural migration.
+    programs.firefox.enable = true;
+    environment.systemPackages = with pkgs; [
+      ffmpeg-full
+      ungoogled-chromium
+      transmission_4-gtk
+      blender
+      obsidian
+    ];
+    users.users.jenshenrik.packages = with pkgs; [ godot legcord opencode ];
 
+    myModules = {
       hardware = {
-        nvidia.enable = false;
         intel-gpu = {
-          enable = true;
           generation = "legacy";
         };
       };
 
       features = {
-        desktop = {
-          gnome.enable = false;
-          audio.enable = false;
-          niri.enable = false;
-        };
-
-        apps = {
-          gaming.enable = false;
-          slicers.enable = false;
-          editors.dotnet-vscode.enable = false;
-          editors.neovim.enable = true;
-        };
-
         services = {
           home-assistant = {
-            enable = true;
             openFirewall = true;
             zbt2 = {
               enable = true;
@@ -119,52 +104,42 @@ in
             };
           };
           spoolman = {
-            enable = true;
             autoStart = true;
             openFirewall = true;
             host = "0.0.0.0";
           };
           transmission = {
-            enable = true;
             openFirewall = true;
             openPeerPorts = false; # peer port only via VPN; nothing to open on LAN
-            netnsName = "protonvpn";
+            netnsName = config.myModules.features.services.vpnNamespace.name;
+            netnsAddress = config.myModules.features.services.vpnNamespace.namespaceAddress;
             portForwarding.enable = true;
           };
           vpnNamespace = {
-            enable = true;
             name = "protonvpn";
             wireguardConfigFile = "/var/lib/proton-vpn/wg0.conf";
             lanCidr = "192.168.86.0/24";
           };
           jellyfin = {
-            enable = true;
             openFirewall = true;
           };
           romm = {
-            enable = true;
             openFirewall = true;
           };
           homepage = {
-            enable = true;
             openFirewall = true;
           };
           adguardhome = {
-            enable = true;
             openFirewall = true;
             extraRewrites = {
               "fluidd.home.arpa" = "192.168.86.120";
             };
           };
           reverseProxy = {
-            enable = true;
             openFirewall = true;
           };
         };
 
-        shells = {
-          zsh.enable = true;
-        };
       };
     };
   };

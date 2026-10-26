@@ -1,13 +1,11 @@
 {
-  nixos.shared = { config, lib, pkgs, ... }:
+  nixos.modules.media = { config, lib, pkgs, ... }:
 
   let
     cfg = config.myModules.features.services.jellyfin;
   in
   {
     options.myModules.features.services.jellyfin = {
-      enable = lib.mkEnableOption "Jellyfin media server";
-
       openFirewall = lib.mkOption {
         type = lib.types.bool;
         default = false;
@@ -39,7 +37,7 @@
       };
     };
 
-    config = lib.mkIf cfg.enable {
+    config = {
       users.groups.${cfg.mediaGroup} = { };
 
       services.jellyfin = {

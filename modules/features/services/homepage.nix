@@ -1,5 +1,5 @@
 {
-  nixos.shared = { config, lib, ... }:
+  nixos.modules.server-web = { config, lib, ... }:
 
   let
     cfg = config.myModules.features.services.homepage;
@@ -8,14 +8,12 @@
     proxy = svc.reverseProxy;
     # Prefer the reverse-proxy name; fall back to host:port.
     link = name: port:
-      if proxy.enable && proxy.hostnames ? ${name}
+      if config.services.caddy.enable && proxy.hostnames ? ${name}
       then proxy.hostnames.${name}
       else "http://${cfg.hostname}:${toString port}";
   in
   {
     options.myModules.features.services.homepage = {
-      enable = lib.mkEnableOption "Homepage dashboard (gethomepage.dev)";
-
       port = lib.mkOption {
         type = lib.types.port;
         default = 8082;
@@ -38,7 +36,7 @@
       };
     };
 
-    config = lib.mkIf cfg.enable {
+    config = {
       services.homepage-dashboard = {
         enable = true;
         listenPort = cfg.port;
@@ -81,16 +79,16 @@
         ];
 
         services =
-          lib.optional (svc.home-assistant.enable || svc.spoolman.enable) {
+          lib.optional (config.services.home-assistant.enable || config.services.spoolman.enable) {
             "Home" =
-              lib.optional svc.home-assistant.enable {
+              lib.optional config.services.home-assistant.enable {
                 "Home Assistant" = {
                   icon = "home-assistant.png";
                   href = link "homeassistant" 8123;
                   description = "Home automation";
                 };
               }
-              ++ lib.optional svc.spoolman.enable {
+              ++ lib.optional config.services.spoolman.enable {
                 "Spoolman" = {
                   icon = "spoolman.png";
                   href = link "spoolman" svc.spoolman.port;
@@ -98,23 +96,23 @@
                 };
               };
           }
-          ++         lib.optional (svc.jellyfin.enable || svc.transmission.enable || svc.romm.enable) {
+          ++         lib.optional (config.services.jellyfin.enable || config.services.transmission.enable || config.services.romm.enable) {
             "Media" =
-              lib.optional svc.romm.enable {
+              lib.optional config.services.romm.enable {
                 "RomM" = {
                   icon = "romm.png";
                   href = link "romm" svc.romm.port;
                   description = "ROM manager";
                 };
               }
-              ++ lib.optional svc.jellyfin.enable {
+              ++ lib.optional config.services.jellyfin.enable {
                 "Jellyfin" = {
                   icon = "jellyfin.png";
                   href = link "jellyfin" 8096;
                   description = "Media server";
                 };
               }
-              ++ lib.optional svc.transmission.enable {
+              ++ lib.optional config.services.transmission.enable {
                 "Transmission" = {
                   icon = "transmission.png";
                   href = link "transmission" svc.transmission.rpcPort;
@@ -128,14 +126,14 @@
                 {
                   "Fluidd" = {
                     icon = "fluidd.png";
-                    href = if svc.adguardhome.enable then "http://fluidd.${svc.adguardhome.localDomain}" else "http://192.168.86.120";
+                    href = if config.services.adguardhome.enable then "http://fluidd.${svc.adguardhome.localDomain}" else "http://192.168.86.120";
                     description = "Neptune 4 Plus";
                   };
                 }
               ];
             }
           ]
-          ++ lib.optional svc.adguardhome.enable {
+          ++ lib.optional config.services.adguardhome.enable {
             "Network" = [
               {
                 "AdGuard Home" = {
