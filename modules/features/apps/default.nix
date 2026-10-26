@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./opencode.nix
     ./ghostty.nix
     ./gaming.nix
     ./slicers.nix

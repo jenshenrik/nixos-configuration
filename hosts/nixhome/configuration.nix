@@ -80,7 +80,6 @@ in
     system.stateVersion = "26.05";
 
     environment.systemPackages = with pkgs; [ ffmpeg-full ];
-    users.users.jenshenrik.packages = with pkgs; [ opencode ];
 
     myModules = {
       hardware = {
