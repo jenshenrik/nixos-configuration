@@ -1,5 +1,9 @@
+{ config, ... }:
+let
+  legacy = config.legacy;
+in
 {
-  nixos.shared = { config, lib, pkgs, ... }:
+  nixos.modules.${if legacy then "legacy" else "fabrication"} = { config, lib, pkgs, ... }:
 
   let
     cfg = config.myModules.features.apps.slicers;
@@ -13,10 +17,12 @@
     };
   in
   {
-    options.myModules.features.apps.slicers.enable =
-      lib.mkEnableOption "3D slicer applications";
+    options = lib.optionalAttrs legacy {
+      myModules.features.apps.slicers.enable =
+        lib.mkEnableOption "3D slicer applications";
+    };
 
-    config = lib.mkIf cfg.enable {
+    config = lib.mkIf (!legacy || cfg.enable) {
       environment.systemPackages = [
         pkgs.prusa-slicer
         pkgs.orca-slicer

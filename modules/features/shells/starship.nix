@@ -1,14 +1,20 @@
+{ config, ... }:
+let
+  legacy = config.legacy;
+in
 {
-  nixos.shared = { config, lib, ... }:
+  nixos.modules.${if legacy then "legacy" else "workstation"} = { config, lib, ... }:
 
   let
     cfg = config.myModules.features.shells.starship;
   in
   {
-    options.myModules.features.shells.starship.enable =
-      lib.mkEnableOption "Starship shell prompt";
+    options = lib.optionalAttrs legacy {
+      myModules.features.shells.starship.enable =
+        lib.mkEnableOption "Starship shell prompt";
+    };
 
-    config = lib.mkIf cfg.enable {
+    config = lib.mkIf (!legacy || cfg.enable) {
       programs.starship.enable = true;
     };
   };

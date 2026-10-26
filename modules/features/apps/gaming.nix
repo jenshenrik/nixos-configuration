@@ -1,14 +1,20 @@
+{ config, ... }:
+let
+  legacy = config.legacy;
+in
 {
-  nixos.shared = { config, lib, pkgs, ... }:
+  nixos.modules.${if legacy then "legacy" else "gaming"} = { config, lib, pkgs, ... }:
 
   let
     cfg = config.myModules.features.apps.gaming;
   in
   {
-    options.myModules.features.apps.gaming.enable =
-      lib.mkEnableOption "gaming tools and NVIDIA configuration";
+    options = lib.optionalAttrs legacy {
+      myModules.features.apps.gaming.enable =
+        lib.mkEnableOption "gaming tools and NVIDIA configuration";
+    };
 
-    config = lib.mkIf cfg.enable {
+    config = lib.mkIf (!legacy || cfg.enable) {
       # Steam
       programs.steam = {
         enable = true;

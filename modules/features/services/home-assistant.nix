@@ -1,5 +1,10 @@
+{ config, ... }:
+
+let
+  legacy = config.legacy;
+in
 {
-  nixos.shared = { config, lib, pkgs, ... }:
+  nixos.modules.${if legacy then "legacy" else "home-assistant"} = { config, lib, pkgs, ... }:
 
   let
     cfg = config.myModules.features.services.home-assistant;
@@ -13,10 +18,9 @@
     matterJsStateDir = "/var/lib/matter-js-server";
   in
   {
-    options.myModules.features.services.home-assistant = {
-      enable =
-        lib.mkEnableOption "Home Assistant service for headless home servers";
-
+    options.myModules.features.services.home-assistant = lib.optionalAttrs legacy {
+      enable = lib.mkEnableOption "Home Assistant service for headless home servers";
+    } // {
       openFirewall = lib.mkOption {
         type = lib.types.bool;
         default = true;
@@ -82,7 +86,7 @@
     };
 
     config = lib.mkMerge [
-      (lib.mkIf cfg.enable {
+      (lib.mkIf (!legacy || cfg.enable) {
         services.home-assistant = {
           enable = true;
           openFirewall = cfg.openFirewall;
@@ -125,7 +129,7 @@
         };
       })
 
-      (lib.mkIf (cfg.enable && cfg.zbt2.enable) {
+      (lib.mkIf ((!legacy || cfg.enable) && cfg.zbt2.enable) {
         # Give the hass user access to the ZBT-2 serial device.
         users.users.hass.extraGroups = [ "dialout" ];
 
@@ -279,7 +283,7 @@
         };
       })
 
-      (lib.mkIf (cfg.enable && cfg.zbt2.enable && cfg.zbt2.otbr.enable) {
+      (lib.mkIf ((!legacy || cfg.enable) && cfg.zbt2.enable && cfg.zbt2.otbr.enable) {
         # OpenThread Border Router talks to the ZBT-2 RCP over serial and
         # bridges the Thread mesh onto the LAN.
         services.openthread-border-router = {

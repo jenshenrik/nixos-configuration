@@ -1,6 +1,9 @@
-{ inputs, ... }:
+{ config, inputs, ... }:
+let
+  legacy = config.legacy;
+in
 {
-  nixos.shared = { config, lib, pkgs, ... }:
+  nixos.modules.${if legacy then "legacy" else "niri"} = { config, lib, pkgs, ... }:
 
   let
     cfg = config.myModules.features.desktop.niri;
@@ -8,10 +11,12 @@
   {
     imports = [ inputs.noctalia.nixosModules.default ];
 
-    options.myModules.features.desktop.niri.enable =
-      lib.mkEnableOption "Niri compositor session";
+    options = lib.optionalAttrs legacy {
+      myModules.features.desktop.niri.enable =
+        lib.mkEnableOption "Niri compositor session";
+    };
 
-    config = lib.mkIf cfg.enable {
+    config = lib.mkIf (!legacy || cfg.enable) ({
       # Niri scrollable-tiling Wayland compositor
       programs.niri.enable = true;
 
@@ -65,13 +70,6 @@
         recommendedServices.enable = true;
       };
 
-      # Keyboard/console parity with the rest of the system
-      services.xserver.xkb = {
-        layout = "dk";
-        variant = "";
-      };
-      console.keyMap = "dk-latin1";
-
       # Baseline userland for a niri session
       environment.systemPackages = with pkgs; [
         tuigreet
@@ -124,6 +122,13 @@
           Restart = "on-failure";
         };
       };
-    };
+    } // lib.optionalAttrs legacy {
+      # Keyboard/console parity with the rest of the system
+      services.xserver.xkb = {
+        layout = "dk";
+        variant = "";
+      };
+      console.keyMap = "dk-latin1";
+    });
   };
 }

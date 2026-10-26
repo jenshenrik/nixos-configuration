@@ -1,14 +1,20 @@
+{ config, ... }:
+let
+  legacy = config.legacy;
+in
 {
-  nixos.shared = { config, lib, pkgs, ... }:
+  nixos.modules.${if legacy then "legacy" else "fabrication"} = { config, lib, pkgs, ... }:
 
   let
     cfg = config.myModules.features.apps.usb-imaging;
   in
   {
-    options.myModules.features.apps.usb-imaging.enable =
-      lib.mkEnableOption "USB image writing tools";
+    options = lib.optionalAttrs legacy {
+      myModules.features.apps.usb-imaging.enable =
+        lib.mkEnableOption "USB image writing tools";
+    };
 
-    config = lib.mkIf cfg.enable {
+    config = lib.mkIf (!legacy || cfg.enable) {
       environment.systemPackages = with pkgs; [
         usbimager
       ];

@@ -4,7 +4,14 @@
   nixos.hosts.nixbox = { ... }: {
     imports = [
       ./hardware-configuration.nix
-      config.nixos.shared
+      config.nixos.modules.base
+      config.nixos.modules.workstation
+      config.nixos.modules.development
+      config.nixos.modules.gaming
+      config.nixos.modules.fabrication
+      config.nixos.modules.niri
+      config.nixos.modules.nvidia
+      config.nixos.modules.home-assistant
     ];
 
     boot.loader.systemd-boot.enable = true;
@@ -22,43 +29,5 @@
 
     system.stateVersion = "26.05";
 
-    myModules = {
-      core = {
-        system.enable = true;
-        users.enable = true;
-        packages.enable = true;
-      };
-
-      hardware = {
-        nvidia.enable = true;
-      };
-
-      features = {
-        desktop = {
-          gnome.enable = false;
-          audio.enable = true;
-          niri.enable = true;
-        };
-
-        apps = {
-          ghostty.enable = true;
-          gaming.enable = true;
-          slicers.enable = true;
-          usb-imaging.enable = true;
-          editors.dotnet-vscode.enable = true;
-          editors.neovim.enable = true;
-        };
-
-        services = {
-          home-assistant.enable = true;
-        };
-
-        shells = {
-          zsh.enable = true;
-          starship.enable = true;
-          direnv.enable = true;
-        };
-      };
-    };
   };
 }

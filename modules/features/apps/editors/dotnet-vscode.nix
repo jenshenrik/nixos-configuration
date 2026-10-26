@@ -1,14 +1,20 @@
+{ config, ... }:
+let
+  legacy = config.legacy;
+in
 {
-  nixos.shared = { config, pkgs, lib, ... }:
+  nixos.modules.${if legacy then "legacy" else "development"} = { config, pkgs, lib, ... }:
 
   let
     cfg = config.myModules.features.apps.editors.dotnet-vscode;
   in
   {
-    options.myModules.features.apps.editors.dotnet-vscode.enable =
-      lib.mkEnableOption "VSCode with .NET extensions";
+    options = lib.optionalAttrs legacy {
+      myModules.features.apps.editors.dotnet-vscode.enable =
+        lib.mkEnableOption "VSCode with .NET extensions";
+    };
 
-    config = lib.mkIf cfg.enable {
+    config = lib.mkIf (!legacy || cfg.enable) {
       programs.vscode = {
         enable = true;
 

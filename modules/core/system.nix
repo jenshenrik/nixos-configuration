@@ -1,14 +1,20 @@
+{ config, ... }:
+
+let
+  legacy = config.legacy;
+in
 {
-  nixos.shared = { config, lib, ... }:
+  nixos.modules.${if legacy then "legacy" else "base"} = { config, lib, ... }:
 
   let
     cfg = config.myModules.core.system;
   in
   {
-    options.myModules.core.system.enable =
-      lib.mkEnableOption "core system configuration";
+    options.myModules.core.system = lib.optionalAttrs legacy {
+      enable = lib.mkEnableOption "core system configuration";
+    };
 
-    config = lib.mkIf cfg.enable {
+    config = lib.mkIf (!legacy || cfg.enable) {
       networking.networkmanager.enable = true;
 
       time.timeZone = "Europe/Copenhagen";
@@ -26,7 +32,6 @@
         LC_TIME = "da_DK.UTF-8";
       };
 
-      virtualisation.docker.enable = true;
       nixpkgs.config.allowUnfree = true;
       nix.settings.experimental-features = [ "nix-command" "flakes" ];
       nix.settings.trusted-users = [ "root" "jenshenrik" ];

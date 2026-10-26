@@ -1,14 +1,20 @@
+{ config, ... }:
+let
+  legacy = config.legacy;
+in
 {
-  nixos.shared = { config, pkgs, lib, ... }:
+  nixos.modules.${if legacy then "legacy" else "base"} = { config, pkgs, lib, ... }:
 
   let
     cfg = config.myModules.features.shells.zsh;
   in
   {
-    options.myModules.features.shells.zsh.enable =
-      lib.mkEnableOption "Zsh as the default user shell";
+    options = lib.optionalAttrs legacy {
+      myModules.features.shells.zsh.enable =
+        lib.mkEnableOption "Zsh as the default user shell";
+    };
 
-    config = lib.mkIf cfg.enable {
+    config = lib.mkIf (!legacy || cfg.enable) {
       programs.zsh = {
           enable = true;
 

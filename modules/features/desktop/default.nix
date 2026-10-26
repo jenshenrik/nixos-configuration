@@ -2,7 +2,8 @@
 
 {
   imports = [
-    ./common.nix
+    ./firefox.nix
+    ./keyboard.nix
     ./gnome.nix
     ./audio.nix
     ./niri.nix

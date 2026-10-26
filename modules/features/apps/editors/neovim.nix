@@ -1,14 +1,20 @@
+{ config, ... }:
+let
+  legacy = config.legacy;
+in
 {
-  nixos.shared = { config, pkgs, lib, ... }:
+  nixos.modules.${if legacy then "legacy" else "development"} = { config, pkgs, lib, ... }:
 
   let
     cfg = config.myModules.features.apps.editors.neovim;
   in
   {
-    options.myModules.features.apps.editors.neovim.enable =
-      lib.mkEnableOption "Neovim configured to load an external LazyVim config with Mason support";
+    options = lib.optionalAttrs legacy {
+      myModules.features.apps.editors.neovim.enable =
+        lib.mkEnableOption "Neovim configured to load an external LazyVim config with Mason support";
+    };
 
-    config = lib.mkIf cfg.enable {
+    config = lib.mkIf (!legacy || cfg.enable) {
       # Install Neovim itself. Using the unwrapped package keeps Nix from
       # managing an init.lua so LazyVim (installed by the user into
       # ~/.config/nvim) is free to take over.

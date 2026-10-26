@@ -1,14 +1,21 @@
+{ config, ... }:
+
+let
+  legacy = config.legacy;
+in
 {
-  nixos.shared = { config, lib, pkgs, ... }:
+  nixos.modules.${if legacy then "legacy" else "nvidia"} = { config, lib, ... }:
 
   let
     cfg = config.myModules.hardware.nvidia;
   in
   {
-    options.myModules.hardware.nvidia.enable =
-      lib.mkEnableOption "NVIDIA proprietary driver";
+    options = lib.optionalAttrs legacy {
+      myModules.hardware.nvidia.enable =
+        lib.mkEnableOption "NVIDIA proprietary driver";
+    };
 
-    config = lib.mkIf cfg.enable {
+    config = lib.mkIf (!legacy || cfg.enable) {
       hardware.graphics = {
         enable = true;
         enable32Bit = true;
