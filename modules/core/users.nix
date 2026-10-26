@@ -21,7 +21,7 @@ in
     config = lib.mkIf (!legacy || cfg.enable) {
       users.users.jenshenrik = {
         isNormalUser = true;
-        description = "Jens Henrik Vogeliu";
+        description = "Jens Henrik Vogelius";
         # Keep nixhome's existing access until its composition is migrated.
         extraGroups = [ "networkmanager" "wheel" ] ++ lib.optional legacy "docker" ++ [ "dialout" ];
         openssh.authorizedKeys.keys = [
