@@ -31,7 +31,8 @@
 
   # Give jenshenrik write access to the shared media/download trees on /mnt/data
   # via the setgid `media` group (created by the transmission/jellyfin modules).
-  users.users.jenshenrik.extraGroups = [ "media" ];
+  # Also `romm` so ROMs can be dropped into /mnt/data/romm/library.
+  users.users.jenshenrik.extraGroups = [ "media" "romm" ];
 
   system.stateVersion = "26.05";
 

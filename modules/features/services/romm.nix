@@ -64,6 +64,12 @@ in
       ];
     };
 
+    # Upstream creates library/ as 0750 romm:romm. Make it group-writable
+    # with setgid so members of the romm group can add ROMs, and new files
+    # inherit the romm group (readable by the service and nginx).
+    systemd.tmpfiles.settings."10-romm"."${cfg.dataDir}/library".d.mode =
+      lib.mkForce "2770";
+
     networking.firewall.allowedTCPPorts = lib.mkIf cfg.openFirewall [ cfg.port ];
   };
 }
