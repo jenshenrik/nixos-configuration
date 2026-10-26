@@ -39,6 +39,26 @@
     };
 
     config = {
+      myModules.features.services = lib.mkIf config.services.adguardhome.enable {
+        reverseProxy.routes.adguard = "127.0.0.1:${toString cfg.port}";
+        homepage.entries.adguard = {
+          group = "Network";
+          order = 10;
+          item = {
+            "AdGuard Home" = {
+              icon = "adguard-home.png";
+              href = config.myModules.features.services.reverseProxy.hostnames.adguard;
+              description = "DNS & ad blocking";
+              widget = {
+                type = "adguard";
+                url = "http://127.0.0.1:${toString cfg.port}";
+                fields = [ "queries" "blocked" "filtered" "latency" ];
+              };
+            };
+          };
+        };
+      };
+
       services.adguardhome = {
         enable = true;
         host = "127.0.0.1";

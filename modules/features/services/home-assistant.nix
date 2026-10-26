@@ -299,4 +299,21 @@ in
       })
     ];
   };
+
+  nixos.modules.server-web = { config, lib, ... }: {
+    config = lib.mkIf config.services.home-assistant.enable {
+      myModules.features.services.reverseProxy.routes.homeassistant = "127.0.0.1:8123";
+      myModules.features.services.homepage.entries.homeassistant = {
+        group = "Home";
+        order = 10;
+        item = {
+          "Home Assistant" = {
+            icon = "home-assistant.png";
+            href = config.myModules.features.services.reverseProxy.hostnames.homeassistant;
+            description = "Home automation";
+          };
+        };
+      };
+    };
+  };
 }

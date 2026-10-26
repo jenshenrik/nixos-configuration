@@ -75,4 +75,22 @@
       networking.firewall.allowedTCPPorts = lib.mkIf cfg.openFirewall [ cfg.port ];
     };
   };
+
+  nixos.modules.server-web = { config, lib, ... }: {
+    config = lib.mkIf config.services.romm.enable {
+      myModules.features.services.reverseProxy.routes.romm =
+        "127.0.0.1:${toString config.myModules.features.services.romm.port}";
+      myModules.features.services.homepage.entries.romm = {
+        group = "Media";
+        order = 10;
+        item = {
+          "RomM" = {
+            icon = "romm.png";
+            href = config.myModules.features.services.reverseProxy.hostnames.romm;
+            description = "ROM manager";
+          };
+        };
+      };
+    };
+  };
 }

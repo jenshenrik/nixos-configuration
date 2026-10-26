@@ -73,4 +73,22 @@
       environment.etc."mime.types".source = "${pkgs.mailcap}/etc/mime.types";
     };
   };
+
+  nixos.modules.server-web = { config, lib, ... }: {
+    config = lib.mkIf config.services.spoolman.enable {
+      myModules.features.services.reverseProxy.routes.spoolman =
+        "127.0.0.1:${toString config.myModules.features.services.spoolman.port}";
+      myModules.features.services.homepage.entries.spoolman = {
+        group = "Home";
+        order = 20;
+        item = {
+          "Spoolman" = {
+            icon = "spoolman.png";
+            href = config.myModules.features.services.reverseProxy.hostnames.spoolman;
+            description = "Filament inventory";
+          };
+        };
+      };
+    };
+  };
 }

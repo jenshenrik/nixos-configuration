@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./fluidd.nix
     ./adguardhome.nix
     ./home-assistant.nix
     ./homepage.nix

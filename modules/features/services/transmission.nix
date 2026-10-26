@@ -196,4 +196,22 @@
       };
     };
   };
+
+  nixos.modules.server-web = { config, lib, ... }: {
+    config = lib.mkIf config.services.transmission.enable {
+      myModules.features.services.reverseProxy.routes.transmission =
+        "127.0.0.1:${toString config.myModules.features.services.transmission.rpcPort}";
+      myModules.features.services.homepage.entries.transmission = {
+        group = "Media";
+        order = 30;
+        item = {
+          "Transmission" = {
+            icon = "transmission.png";
+            href = config.myModules.features.services.reverseProxy.hostnames.transmission;
+            description = "Torrents (via VPN)";
+          };
+        };
+      };
+    };
+  };
 }

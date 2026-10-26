@@ -58,4 +58,21 @@
       ];
     };
   };
+
+  nixos.modules.server-web = { config, lib, ... }: {
+    config = lib.mkIf config.services.jellyfin.enable {
+      myModules.features.services.reverseProxy.routes.jellyfin = "127.0.0.1:8096";
+      myModules.features.services.homepage.entries.jellyfin = {
+        group = "Media";
+        order = 20;
+        item = {
+          "Jellyfin" = {
+            icon = "jellyfin.png";
+            href = config.myModules.features.services.reverseProxy.hostnames.jellyfin;
+            description = "Media server";
+          };
+        };
+      };
+    };
+  };
 }
