@@ -79,16 +79,8 @@ in
 
     system.stateVersion = "26.05";
 
-    # Preserve the old baseline package selection during the structural migration.
-    programs.firefox.enable = true;
-    environment.systemPackages = with pkgs; [
-      ffmpeg-full
-      ungoogled-chromium
-      transmission_4-gtk
-      blender
-      obsidian
-    ];
-    users.users.jenshenrik.packages = with pkgs; [ godot legcord opencode ];
+    environment.systemPackages = with pkgs; [ ffmpeg-full ];
+    users.users.jenshenrik.packages = with pkgs; [ opencode ];
 
     myModules = {
       hardware = {

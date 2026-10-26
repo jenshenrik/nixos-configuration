@@ -1,6 +1,12 @@
 { config, ... }:
 {
-  nixos.modules.development.imports = [ config.nixos.modules.server-admin ];
+  nixos.modules.development = { pkgs, ... }: {
+    imports = [ config.nixos.modules.server-admin ];
+
+    # Graphical clipboard providers for local editor sessions.
+    environment.systemPackages = with pkgs; [ wl-clipboard xclip ];
+    fonts.packages = with pkgs; [ nerd-fonts.jetbrains-mono ];
+  };
 
   nixos.modules.server-admin = { pkgs, ... }: {
       # Install Neovim itself. Using the unwrapped package keeps Nix from
@@ -32,10 +38,6 @@
         go
         lua5_1
         luarocks
-
-        # Clipboard providers (LazyVim autodetects these).
-        wl-clipboard
-        xclip
       ];
 
       # Make prebuilt binaries fetched by Mason executable on NixOS.
@@ -54,10 +56,5 @@
 
       # Make nvim the default editor system-wide.
       environment.variables.EDITOR = "nvim";
-
-      # Nerd Font so file-tree/statusline icons render correctly.
-      fonts.packages = with pkgs; [
-        nerd-fonts.jetbrains-mono
-      ];
   };
 }
