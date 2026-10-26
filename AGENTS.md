@@ -4,7 +4,9 @@
   - nixbox - a desktop computer for everyday use, incl. gaming, browsing, and programming
   - nixhome - a small home server used to host various services
 
-  Whenever you add a feature to nixhome that has a frontend, add a link to that frontend to the homepage dashboard.
+  All features should be created using the dendritic pattern, as described here https://github.com/mightyiam/dendritic.
+  Whenever you add a feature to nixhome that has a frontend, add a link to that frontend to the homepage dashboard and the reverse proxy.
+  If in doubt about the the url to create for the feature, ask.
 
   ## Verify the target first
   - Before making changes, identify the exact target config and the machine/OS required to validate it.
