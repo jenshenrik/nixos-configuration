@@ -82,6 +82,8 @@ in
             # Exact names (extraRewrites) take precedence over the wildcard.
             rewrites =
               [
+                # Do not let the server's local loopback hostname leak into LAN DNS.
+                { domain = config.networking.hostName; answer = localNetwork.serverAddress; enabled = true; }
                 { domain = "*.${localNetwork.domain}"; answer = localNetwork.serverAddress; enabled = true; }
                 { domain = "${config.networking.hostName}.${localNetwork.domain}"; answer = localNetwork.serverAddress; enabled = true; }
               ]
