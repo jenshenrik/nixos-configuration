@@ -76,10 +76,17 @@
     };
   };
 
-  nixos.modules.server-web = { config, lib, ... }: {
-    config = lib.mkIf config.services.romm.enable {
+  nixos.modules.server-web = { config, lib, ... }:
+  let
+    romm = config.services.romm;
+    frontend = config.services.nginx.virtualHosts.${romm.nginx.virtualHost};
+    listener = lib.findFirst (listener: !(listener.ssl or false)) null frontend.listen;
+    port = if listener == null then config.services.nginx.defaultHTTPListenPort else listener.port;
+  in
+  {
+    config = lib.mkIf (romm.enable && romm.nginx.enable) {
       myModules.features.services.reverseProxy.routes.romm =
-        "127.0.0.1:${toString config.myModules.features.services.romm.port}";
+        "127.0.0.1:${toString port}";
       myModules.features.services.homepage.entries.romm = {
         group = "Media";
         order = 10;

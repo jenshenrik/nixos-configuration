@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./ffmpeg.nix
     ./opencode.nix
     ./ghostty.nix
     ./gaming.nix

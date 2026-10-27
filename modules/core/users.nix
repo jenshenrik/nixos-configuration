@@ -1,7 +1,11 @@
-{
-  nixos.modules.server-admin = {
+let
+  dockerAccess = {
     users.users.jenshenrik.extraGroups = [ "docker" ];
   };
+in
+{
+  nixos.modules.development = dockerAccess;
+  nixos.modules.server-admin = dockerAccess;
 
   nixos.modules.base = {
     users.users.jenshenrik = {

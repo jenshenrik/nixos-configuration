@@ -200,7 +200,7 @@
   nixos.modules.server-web = { config, lib, ... }: {
     config = lib.mkIf config.services.transmission.enable {
       myModules.features.services.reverseProxy.routes.transmission =
-        "127.0.0.1:${toString config.myModules.features.services.transmission.rpcPort}";
+        "127.0.0.1:${toString config.services.transmission.settings.rpc-port}";
       myModules.features.services.homepage.entries.transmission = {
         group = "Media";
         order = 30;

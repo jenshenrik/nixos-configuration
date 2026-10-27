@@ -8,9 +8,10 @@ in
   localNetwork = {
     serverAddress = "192.168.86.246";
     domain = "home.arpa";
+    printerAddress = "192.168.86.120";
   };
 
-  nixos.hosts.nixhome = { config, pkgs, ... }: {
+  nixos.hosts.nixhome = { config, ... }: {
     imports = [
       ./hardware-configuration.nix
       modules.base
@@ -79,8 +80,6 @@ in
 
     system.stateVersion = "26.05";
 
-    environment.systemPackages = with pkgs; [ ffmpeg-full ];
-
     myModules = {
       hardware = {
         intel-gpu = {
@@ -128,9 +127,6 @@ in
           };
           adguardhome = {
             openFirewall = true;
-            extraRewrites = {
-              "fluidd.${localNetwork.domain}" = "192.168.86.120";
-            };
           };
           reverseProxy = {
             openFirewall = true;
