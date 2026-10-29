@@ -14,7 +14,12 @@
 
     # Useful gaming packages
     environment.systemPackages = with pkgs; [
-      faugus-launcher
+      (faugus-launcher.overrideAttrs (old: {
+        # Avoid mismatched runtime metadata from Steam's CDN until UMU is updated.
+        makeWrapperArgs = (old.makeWrapperArgs or []) ++ [
+          "--set UMU_RUNTIME_UPDATE 0"
+        ];
+      }))
       heroic
       mangohud
       goverlay
