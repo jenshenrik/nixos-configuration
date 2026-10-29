@@ -14,6 +14,7 @@
 
     # Useful gaming packages
     environment.systemPackages = with pkgs; [
+      faugus-launcher
       heroic
       mangohud
       goverlay
